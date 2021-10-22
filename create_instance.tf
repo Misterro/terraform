@@ -14,6 +14,16 @@ provider "yandex" {
   zone      = "ru-central1-a"
 }
 
+resource "yandex_compute_disk" "disk-1" {
+  name = "build-disk"
+  type = "network-hdd"
+  size = "10"
+
+  labels = {
+    environment = "build_disk"
+  }
+}
+
 resource "yandex_compute_instance" "build" {
   network_interface {
     subnet_id = "e9bdd04rmjgc6njf487l"
@@ -24,7 +34,7 @@ resource "yandex_compute_instance" "build" {
   }
   boot_disk {
     initialize_params {
-      image_id = "disk-1634933857573"
+      image_id = "disk-163493385"
     }
   }
 }
