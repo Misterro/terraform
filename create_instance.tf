@@ -15,12 +15,16 @@ provider "yandex" {
 }
 
 resource "yandex_compute_instance" "build" {
-  boot_disk {}
   network_interface {
     subnet_id = "e9bdd04rmjgc6njf487l"
   }
   resources {
     cores = 2
     memory = 2
+  }
+  boot_disk {
+    initialize_params {
+      image_id = "disk-1634933857573"
+    }
   }
 }
