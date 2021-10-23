@@ -8,10 +8,10 @@ terraform {
 }
 
 provider "yandex" {
-  token     = file("yandex_token")
-  cloud_id  = "b1g7q7tems6tss4edocn"
-  folder_id = "b1g2q57553gluktr658l"
-  zone      = "ru-central1-a"
+  token     = "${var.yandex-token}"
+  cloud_id  = "${var.yandex-cloud-id}"
+  folder_id = "${var.yandex-folder-id}"
+  zone      = "${var.yandex-zone}"
 }
 
 resource "yandex_compute_instance" "build" {
