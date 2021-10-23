@@ -35,7 +35,7 @@ resource "yandex_vpc_subnet" "subnet" {
 
 resource "yandex_compute_instance" "build" {
   network_interface {
-    subnet_id = "e9bdd04rmjgc6njf487l"
+    subnet_id = yandex_vpc_subnet.subnet.id
     ipv4 = true
   }
   resources {
