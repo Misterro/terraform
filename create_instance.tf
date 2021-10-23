@@ -31,10 +31,12 @@ resource "yandex_compute_instance" "build" {
     }
   }
 
-  user_date = <<EOF
+  metadata = {
+    user-data = <<EOF
 #!/bin/bash
 apt update
 apt install nginx -y
 echo "Hello" > /var/www/html/index.html
 EOF
+  }
 }
