@@ -24,9 +24,9 @@ resource "yandex_compute_instance" "build" {
   }
   boot_disk {
     initialize_params {
-      name = "newDisk"
+      name = "new_disk"
       size = 10
-      type = "HDD"
+      type = "network-hdd"
       image_id = "fd814k6nlgobk70klpjn"
     }
   }
