@@ -2,7 +2,7 @@ terraform {
   required_providers {
     yandex = {
       source  = "yandex-cloud/yandex"
-      version = "0.61.0"
+      version = "0.65.0"
     }
   }
 }
@@ -27,6 +27,7 @@ resource "yandex_compute_instance" "build" {
       name = "newDisk"
       size = 10
       type = "HDD"
+      image_id = "fd814k6nlgobk70klpjn"
     }
   }
 }
