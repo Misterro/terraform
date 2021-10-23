@@ -17,6 +17,7 @@ provider "yandex" {
 resource "yandex_compute_instance" "build" {
   network_interface {
     subnet_id = "e9bdd04rmjgc6njf487l"
+    ipv4 = true
   }
   resources {
     cores = 2
@@ -37,6 +38,7 @@ resource "yandex_compute_instance" "build" {
 apt update
 apt install nginx -y
 echo "Hello" > /var/www/html/index.html
+sudo service nginx start
 EOF
   }
 }
