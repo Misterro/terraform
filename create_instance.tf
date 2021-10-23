@@ -14,6 +14,25 @@ provider "yandex" {
   zone      = var.yandex-zone
 }
 
+resource "yandex_vpc_network" "network" {
+  name = "network"
+
+  labels = {
+    environment = "network"
+  }
+}
+
+resource "yandex_vpc_subnet" "subnet" {
+  name = "subnet"
+  zone = var.yandex-zone
+  network_id = yandex_vpc_network.network.id
+  v4_cidr_blocks = ["10.0.0.0/24"]
+
+  labels = {
+    environment = "subnet"
+  }
+}
+
 resource "yandex_compute_instance" "build" {
   network_interface {
     subnet_id = "e9bdd04rmjgc6njf487l"
