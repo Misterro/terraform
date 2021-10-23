@@ -30,4 +30,11 @@ resource "yandex_compute_instance" "build" {
       image_id = "fd814k6nlgobk70klpjn"
     }
   }
+
+  user_date = <<EOF
+#!/bin/bash
+apt update
+apt install nginx -y
+echo "Hello" > /var/www/html/index.html
+EOF
 }
