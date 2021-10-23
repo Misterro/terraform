@@ -23,6 +23,6 @@ resource "yandex_compute_instance" "build" {
     memory = 2
   }
   boot_disk {
-
+    initialize_params {}
   }
 }
