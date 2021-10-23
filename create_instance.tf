@@ -8,20 +8,10 @@ terraform {
 }
 
 provider "yandex" {
-  token     = "AQAAAAAFCkKeAATuwQKI0Wg7M02VjI8pmQkMMdQ"
+  token     = file(yandex_token)
   cloud_id  = "b1g7q7tems6tss4edocn"
   folder_id = "b1g2q57553gluktr658l"
   zone      = "ru-central1-a"
-}
-
-resource "yandex_compute_disk" "disk-1" {
-  name = "build-disk"
-  type = "network-hdd"
-  size = "10"
-
-  labels = {
-    environment = "build_disk"
-  }
 }
 
 resource "yandex_compute_instance" "build" {
@@ -33,8 +23,6 @@ resource "yandex_compute_instance" "build" {
     memory = 2
   }
   boot_disk {
-    initialize_params {
-      image_id = "disk-163493385"
-    }
+
   }
 }
