@@ -52,6 +52,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   metadata = {
+    ssh-keys = file("~/.ssh/id_rsa.pub")
     user-data = <<EOF
 #!/bin/bash
 apt update
