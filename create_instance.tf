@@ -52,13 +52,11 @@ resource "yandex_compute_instance" "build" {
   }
 
   metadata = {
-    ssh-keys = file("~/.ssh/id_rsa.pub")
-    user-data = <<EOF
-#!/bin/bash
-apt update
-apt install nginx -y
-echo "Hello" > /var/www/html/index.html
-sudo service nginx start
-EOF
+    ssh-keys = "extor:${file("~/.ssh/id_rsa.pub")}"
   }
+}
+
+resource "yandex_container_registry" "registry" {
+  name = "registry"
+  folder_id = var.yandex-folder-id
 }
