@@ -54,6 +54,20 @@ resource "yandex_compute_instance" "build" {
   metadata = {
     ssh-keys = "extor:${file("~/.ssh/id_rsa.pub")}"
   }
+
+  provisioner "remote-exec" {
+    inline = ["sudo apt -y install python"]
+
+    connection {
+      type = "ssh"
+      user = "ubuntu"
+      private_key = yandex_compute_instance.build.metadata.ssh-keys
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -u ubuntu -i '${self.network_interface.ip_address}' --private-key ${yandex_compute_instance.build.metadata.ssh-keys} main.yml"
+  }
 }
 
 resource "yandex_container_registry" "registry" {
