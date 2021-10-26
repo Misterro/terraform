@@ -62,12 +62,12 @@ resource "yandex_compute_instance" "build" {
       host = self.network_interface[0].ip_address
       type = "ssh"
       user = "ubuntu"
-      private_key = file("~/.ssh/id_rsa.pub")
+      private_key = self.metadata.ssh-keys
     }
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -u ubuntu -i ${file("~/.ssh/id_rsa.pub")} --private-key ${yandex_compute_instance.build.metadata.ssh-keys} main.yml"
+    command = "ansible-playbook -u ubuntu -i ${self.network_interface[0].ip_address} --private-key ${yandex_compute_instance.build.metadata.ssh-keys} main.yml"
   }
 }
 
