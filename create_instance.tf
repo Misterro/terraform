@@ -59,14 +59,14 @@ resource "yandex_compute_instance" "build" {
     inline = ["sudo apt -y install python"]
 
     connection {
-      host = self.network_interface[0].ip_address
+      host = self.network_interface[0].ipv4
       type = "ssh"
       user = "ubuntu"
     }
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -u ubuntu -i ${self.network_interface[0].ip_address} --private-key ${yandex_compute_instance.build.metadata.ssh-keys} main.yml"
+    command = "ansible-playbook -u ubuntu -i ${self.network_interface[0].ipv4} --private-key ${yandex_compute_instance.build.metadata.ssh-keys} main.yml"
   }
 }
 
