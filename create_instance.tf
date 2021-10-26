@@ -62,7 +62,6 @@ resource "yandex_compute_instance" "build" {
       host = self.network_interface[0].ip_address
       type = "ssh"
       user = "ubuntu"
-      private_key = self.metadata.ssh-keys
     }
   }
 
