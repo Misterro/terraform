@@ -59,6 +59,7 @@ resource "yandex_compute_instance" "build" {
     inline = ["sudo apt -y install python"]
 
     connection {
+      host = self.network_interface.ip_address
       type = "ssh"
       user = "ubuntu"
       private_key = yandex_compute_instance.build.metadata.ssh-keys
