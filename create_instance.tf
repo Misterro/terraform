@@ -56,11 +56,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y",
-     "sudo docker build -t box .", 
-     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
-     "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest", 
-     "sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
+    inline = ["echo connected!"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
@@ -71,11 +67,12 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "local-exec" {
-      command = "ssh-keyscan ${self.network_interface[0].nat_ip_address} >> ~/.ssh/known_hosts && apt install rsync -y && rsync -avzRy Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
+      command = "ssh-keyscan ${self.network_interface[0].nat_ip_address} >> ~/.ssh/known_hosts && apt update && apt install rsync -y && rsync -avzRy Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
     }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y",
+    inline = ["apt update",
+      "sudo apt install docker.io -y",
      "sudo docker build -t box /tmp",
      "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex",
      "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest",
@@ -135,7 +132,8 @@ resource "yandex_compute_instance" "prod" {
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y",
+    inline = ["apt update",
+      "sudo apt install docker.io -y",
      "sudo docker volume create --name volume", 
      "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
      "sudo docker run -d -v volume:/war cr.yandex/${yandex_container_registry.registry.id}/box:latest",
