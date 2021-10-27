@@ -66,9 +66,9 @@ resource "yandex_compute_instance" "build" {
     }
   }
 
-  provisioner "local-exec" {
-    command = "apt install docker.io -y && docker build -t box . && docker images"
-  }
+  # provisioner "local-exec" {
+  #   command = "apt install docker.io -y && docker build -t box . && docker images"
+  # }
 }
 
 resource "yandex_container_registry" "registry" {
@@ -81,6 +81,6 @@ resource "yandex_container_registry_iam_binding" "user" {
   role = "container-registry.images.pusher"
 
   members = [
-    "userAccount:{ajecrgtho5m706hs6ej0}"
+    "userAccount:ajecrgtho5m706hs6ej0"
   ]
 }
