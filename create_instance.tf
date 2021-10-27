@@ -56,7 +56,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "remote-exec" {
-    inline = ["ls"]
+    inline = ["echo 'connected!'"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
@@ -108,7 +108,7 @@ resource "yandex_compute_instance" "prod" {
   }
 
   provisioner "remote-exec" {
-    inline = ["ls"]
+    inline = ["echo 'connected!'"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
@@ -121,5 +121,5 @@ resource "yandex_compute_instance" "prod" {
   provisioner "local-exec" {
     command = "apt install docker.io -y && docker volume create --name volume && docker login --username oauth --password ${var.yandex-token} cr.yandex && docker run -d -v volume:/war cr.yandex/${yandex_container_registry.registry.id}/box:latest && docker run -d -v volume:/usr/local/tomcat/webapps -p 8084:8080 tomcat:9.0.20-jre8-alpine && docker ps -a"
   }
-  depends_on = yandex_compute_instance.build
+  depends_on = [yandex_compute_instance.build]
 }
