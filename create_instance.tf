@@ -67,7 +67,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -u ubuntu -i '${self.network_interface[0].nat_ip_address}' --private-key '${file("~/.ssh/id_rsa")}' ansible/main.yml"
+    command = "ansible-playbook -u ubuntu -i '${self.network_interface[0].nat_ip_address},' --private-key '${file("~/.ssh/id_rsa")}' ansible/main.yml"
   }
 }
 
