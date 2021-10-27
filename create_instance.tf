@@ -84,3 +84,41 @@ resource "yandex_container_registry_iam_binding" "user" {
     "userAccount:ajecrgtho5m706hs6ej0"
   ]
 }
+
+resource "yandex_compute_instance" "prod" {
+  network_interface {
+    subnet_id = yandex_vpc_subnet.subnet.id
+    nat = true
+  }
+  resources {
+    cores = 2
+    memory = 2
+  }
+  boot_disk {
+    initialize_params {
+      name = "disk3"
+      size = 30
+      type = "network-hdd"
+      image_id = "fd814k6nlgobk70klpjn"
+    }
+  }
+
+  metadata = {
+    ssh-keys = "extor:${file("~/.ssh/id_rsa.pub")}"
+  }
+
+  provisioner "remote-exec" {
+    inline = ["ls"]
+
+    connection {
+      host = self.network_interface[0].nat_ip_address
+      type = "ssh"
+      user = "ubuntu"
+      private_key = file("~/.ssh/id_rsa")
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "apt install docker.io -y && docker volume create --name volume && docker login --username oauth --password ${var.yandex-token} cr.yandex && docker run -d -v volume:/war cr.yandex/${yandex_container_registry.registry.id}/box:latest && docker run -d -v volume:/usr/local/tomcat/webapps -p 8084:8080 tomcat:9.0.20-jre8-alpine
+  }
+}
