@@ -67,7 +67,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "local-exec" {
-    command = "apt install docker.io -y && docker build -t box . && docker login --username oauth --password ${var.yandex-token} cr.yandex && docker tag box cr.yandex/${yandex_container_registry.registry.id} && docker push cr.yandex/${yandex_container_registry.registry.id}/box:box"
+    command = "apt install docker.io -y && docker build -t box . && docker login --username oauth --password ${var.yandex-token} cr.yandex && docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest && docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"
   }
 }
 
