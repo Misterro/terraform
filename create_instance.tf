@@ -53,14 +53,17 @@ resource "yandex_compute_instance" "build" {
 
   metadata = {
     ssh-keys = "extor:${file("~/.ssh/id_rsa.pub")}"
+    user_data = <<EOF
+sudo apt install docker.io -y && 
+sudo docker build -t box /tmp && 
+sudo docker login --username oauth --password ${var.yandex-token} cr.yandex &&
+sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest && 
+sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest
+EOF
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y",
-     "sudo docker build -t box /tmp", 
-     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
-     "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest", 
-     "sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
+    inline = ["echo connect"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
@@ -68,12 +71,11 @@ resource "yandex_compute_instance" "build" {
       user = "ubuntu"
       private_key = file("~/.ssh/id_rsa")
     }
-    provisioner "local-exec" {
+  }
+
+  provisioner "local-exec" {
       command = "apt install rsync -y && rsync -avzR Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
     }
-
-    depends_on = [time_sleep.wait_30_seconds]
-  }
 }
 
 resource "null_resource" "previous" {}
