@@ -56,7 +56,11 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y && sudo docker build -t box . && sudo docker login --username oauth --password ${var.yandex-token} cr.yandex && sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest && sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
+    inline = ["sudo apt install docker.io -y",
+     "sudo docker build -t box .", 
+     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
+     "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest", 
+     "sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
@@ -104,7 +108,12 @@ resource "yandex_compute_instance" "prod" {
   }
 
   provisioner "remote-exec" {
-    inline = ["sudo apt install docker.io -y && sudo docker volume create --name volume && sudo docker login --username oauth --password ${var.yandex-token} cr.yandex && sudo docker run -d -v volume:/war cr.yandex/${yandex_container_registry.registry.id}/box:latest && sudo docker run -d -v volume:/usr/local/tomcat/webapps -p 8085:8080 tomcat:9.0.20-jre8-alpine && sudo docker ps -a"]
+    inline = ["sudo apt install docker.io -y",
+     "sudo docker volume create --name volume", 
+     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
+     "sudo docker run -d -v volume:/war cr.yandex/${yandex_container_registry.registry.id}/box:latest",
+     "sudo docker run -d -v volume:/usr/local/tomcat/webapps -p 8085:8080 tomcat:9.0.20-jre8-alpine",
+     "sudo docker ps -a"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
