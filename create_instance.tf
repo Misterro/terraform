@@ -73,6 +73,21 @@ resource "yandex_compute_instance" "build" {
   provisioner "local-exec" {
       command = "ssh-keyscan ${self.network_interface[0].nat_ip_address} >> ~/.ssh/known_hosts && apt install rsync -y && rsync -avzRy Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
     }
+
+  provisioner "remote-exec" {
+    inline = ["sudo apt install docker.io -y",
+     "sudo docker build -t box /tmp",
+     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex",
+     "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest",
+     "sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
+
+    connection {
+      host = self.network_interface[0].nat_ip_address
+      type = "ssh"
+      user = "ubuntu"
+      private_key = file("~/.ssh/id_rsa")
+    }
+  }
 }
 
 resource "null_resource" "previous" {}
