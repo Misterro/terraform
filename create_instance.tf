@@ -53,17 +53,14 @@ resource "yandex_compute_instance" "build" {
 
   metadata = {
     ssh-keys = "extor:${file("~/.ssh/id_rsa.pub")}"
-    user_data = <<EOF
-sudo apt install docker.io -y && 
-sudo docker build -t box /tmp && 
-sudo docker login --username oauth --password ${var.yandex-token} cr.yandex &&
-sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest && 
-sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest
-EOF
   }
 
   provisioner "remote-exec" {
-    inline = ["echo connect"]
+    inline = ["sudo apt install docker.io -y",
+     "sudo docker build -t box .", 
+     "sudo docker login --username oauth --password ${var.yandex-token} cr.yandex", 
+     "sudo docker tag box cr.yandex/${yandex_container_registry.registry.id}/box:latest", 
+     "sudo docker push cr.yandex/${yandex_container_registry.registry.id}/box:latest"]
 
     connection {
       host = self.network_interface[0].nat_ip_address
