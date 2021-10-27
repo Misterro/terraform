@@ -62,6 +62,7 @@ resource "yandex_compute_instance" "build" {
       host = self.network_interface[0].nat_ip_address
       type = "ssh"
       user = "ubuntu"
+      key = "extor:${file("~/.ssh/id_rsa.pub")}"
     }
   }
 
@@ -73,4 +74,11 @@ resource "yandex_compute_instance" "build" {
 resource "yandex_container_registry" "registry" {
   name = "registry"
   folder_id = var.yandex-folder-id
+}
+
+output instance {
+  value       = yandex_compute_instance.build.metadata
+  sensitive   = true
+  description = "description"
+  depends_on  = []
 }
