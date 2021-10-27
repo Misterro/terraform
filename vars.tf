@@ -13,3 +13,7 @@ variable "yandex-folder-id" {
 variable "yandex-zone" {
   default = ""
 }
+
+variable "yandex-username" {
+  default = ""
+}
