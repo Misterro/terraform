@@ -56,6 +56,8 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "remote-exec" {
+    inline = ["ls"]
+
     connection {
       host = self.network_interface[0].nat_ip_address
       type = "ssh"
