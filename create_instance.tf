@@ -67,7 +67,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "local-exec" {
-    command = "apt install docker.io -y && docker buld -t box . && docker images"
+    command = "apt install docker.io -y && docker build -t box . && docker images"
   }
 }
 
