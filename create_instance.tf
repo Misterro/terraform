@@ -68,7 +68,17 @@ resource "yandex_compute_instance" "build" {
       user = "ubuntu"
       private_key = file("~/.ssh/id_rsa")
     }
+
+    depends_on = [time_sleep.wait_30_seconds]
   }
+}
+
+resource "null_resource" "previous" {}
+
+resource "time_sleep" "wait_30_seconds" {
+    depends_on = [null_resource.previous]
+
+    create_duration = "30s"
 }
 
 resource "yandex_container_registry" "registry" {
