@@ -62,7 +62,7 @@ resource "yandex_compute_instance" "build" {
       host = self.network_interface[0].nat_ip_address
       type = "ssh"
       user = "ubuntu"
-      key = "extor:${file("~/.ssh/id_rsa.pub")}"
+      private_key = "extor:${file("~/.ssh/id_rsa.pub")}"
     }
   }
 
