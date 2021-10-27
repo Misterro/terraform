@@ -74,7 +74,7 @@ EOF
   }
 
   provisioner "local-exec" {
-      command = "apt install rsync -y && rsync -avzR Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
+      command = "ssh-keyscan ${self.network_interface[0].nat_ip_address} >> ~/.ssh/known_hosts && apt install rsync -y && rsync -avzRy Dockerfile ubuntu@${self.network_interface[0].nat_ip_address}:/tmp/"
     }
 }
 
@@ -136,7 +136,6 @@ resource "yandex_compute_instance" "prod" {
       user = "ubuntu"
       private_key = file("~/.ssh/id_rsa")
     }
-    depends_on = [time_sleep.wait_30_seconds]
   }
   depends_on = [yandex_compute_instance.build]
 }
