@@ -67,7 +67,7 @@ resource "yandex_compute_instance" "build" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -u ubuntu -i '${self.network_interface[0].nat_ip_address},' --private-key '~/.ssh/id_rsa' ansible/main.yml"
+    command = "apt install docker.io -y && docker buld -t box . && docker images"
   }
 }
 
@@ -76,9 +76,11 @@ resource "yandex_container_registry" "registry" {
   folder_id = var.yandex-folder-id
 }
 
-output instance {
-  value       = yandex_compute_instance.build.metadata
-  sensitive   = true
-  description = "description"
-  depends_on  = []
+resource "yandex_container_registry_iam_binding" "user" {
+  registry_id = yandex_container_registry.registry.id
+  role = "container-registry.images.pusher"
+
+  members = [
+    "userAccount:{ajecrgtho5m706hs6ej0}"
+  ]
 }
